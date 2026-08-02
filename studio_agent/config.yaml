@@ -1,0 +1,1846 @@
+# Studio Agent configuration.
+# Model choice lives here, never hardcoded in stage logic (invariant #6).
+# `--fake` selects the `fake` profile so the pipeline runs offline at zero cost.
+
+default_profile: fake
+
+default_model_options:
+  llm: volcengine-deepseek-v4-flash
+  image: doubao-seedream
+  video: china-seedance-fast
+  vlm: doubao-seed-2-lite-qc
+
+# 分镜图 (storyboard motion-grid) keyframes for clip mode. Opt-in and default-safe:
+# only active when enabled AND a grid-capable image model + a Seedance video model are
+# both selected (see image_supports_storyboard_grid / video_supports_storyboard_grid).
+motion_grid:
+  enabled: false
+  story_scenes: false    # opt-in: also use 分镜图 per scene in story mode (grid-capable only)
+  layout: auto    # auto | 2x2 | 3x3 | 九宫格 | 3x4 | 十二宫格
+
+# Advise-only story-flow review over the assembled shot list. Writes
+# storyboard/shots.review.md at the human gate; never mutates shots.json.
+storyboard:
+  flow_review:
+    enabled: true
+
+model_options:
+  llm:
+    fake:
+      label: "Fake LLM"
+      group: "Testing / offline"
+      provider: "Testing / offline"
+      capabilities: [text]
+      llm: fake
+    # OpenAI model catalog verified 2026-06-20:
+    # https://developers.openai.com/api/docs/models/all
+    openai-gpt-5-5: &openai_llm
+      label: "GPT-5.5"
+      group: "OpenAI"
+      provider: "OpenAI"
+      availability: stable
+      requires: [OPENAI_API_KEY]
+      capabilities: [text]
+      llm: openai-compatible
+      llm_base_url: https://api.openai.com/v1
+      llm_api_key_env: OPENAI_API_KEY
+      llm_model: gpt-5.5
+      llm_temperature: 0.4
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: true
+    openai-gpt-5-5-pro:
+      <<: *openai_llm
+      label: "GPT-5.5 Pro"
+      llm_model: gpt-5.5-pro
+    openai-gpt-5-4:
+      <<: *openai_llm
+      label: "GPT-5.4"
+      llm_model: gpt-5.4
+    openai-gpt-5-4-pro:
+      <<: *openai_llm
+      label: "GPT-5.4 Pro"
+      llm_model: gpt-5.4-pro
+    openai-gpt-5-4-mini:
+      <<: *openai_llm
+      label: "GPT-5.4 Mini"
+      llm_model: gpt-5.4-mini
+    openai-gpt-5-4-nano:
+      <<: *openai_llm
+      label: "GPT-5.4 Nano"
+      llm_model: gpt-5.4-nano
+    openai-gpt-5-2:
+      <<: *openai_llm
+      label: "GPT-5.2"
+      llm_model: gpt-5.2
+    openai-gpt-5-2-pro:
+      <<: *openai_llm
+      label: "GPT-5.2 Pro"
+      llm_model: gpt-5.2-pro
+    openai-gpt-5-1:
+      <<: *openai_llm
+      label: "GPT-5.1"
+      llm_model: gpt-5.1
+    openai-gpt-5:
+      <<: *openai_llm
+      label: "GPT-5"
+      llm_model: gpt-5
+    openai-gpt-5-pro:
+      <<: *openai_llm
+      label: "GPT-5 Pro"
+      llm_model: gpt-5-pro
+    openai-gpt-5-mini:
+      <<: *openai_llm
+      label: "GPT-5 Mini"
+      llm_model: gpt-5-mini
+    openai-gpt-5-nano:
+      <<: *openai_llm
+      label: "GPT-5 Nano"
+      llm_model: gpt-5-nano
+    openai-o3:
+      <<: *openai_llm
+      label: "o3"
+      llm_model: o3
+      llm_temperature: 1.0
+    openai-o3-pro:
+      <<: *openai_llm
+      label: "o3 Pro"
+      llm_model: o3-pro
+      llm_temperature: 1.0
+    openai-gpt-4-1:
+      <<: *openai_llm
+      label: "GPT-4.1"
+      llm_model: gpt-4.1
+    openai-gpt-4-1-mini:
+      <<: *openai_llm
+      label: "GPT-4.1 Mini"
+      llm_model: gpt-4.1-mini
+    openai-gpt-4o-mini:
+      <<: *openai_llm
+      label: "GPT-4o Mini"
+      llm_model: gpt-4o-mini
+
+    # Anthropic model catalog and OpenAI compatibility verified 2026-06-20:
+    # https://platform.claude.com/docs/en/about-claude/models/overview
+    # https://platform.claude.com/docs/en/api/openai-sdk
+    anthropic-claude-fable-5: &anthropic_llm
+      label: "Claude Fable 5"
+      group: "Anthropic"
+      provider: "Anthropic"
+      availability: stable
+      requires: [ANTHROPIC_API_KEY]
+      capabilities: [text]
+      llm: openai-compatible
+      llm_base_url: https://api.anthropic.com/v1
+      llm_api_key_env: ANTHROPIC_API_KEY
+      llm_model: claude-fable-5
+      llm_temperature: 0.4
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    anthropic-claude-opus-4-8:
+      <<: *anthropic_llm
+      label: "Claude Opus 4.8"
+      llm_model: claude-opus-4-8
+    anthropic-claude-opus-4-7:
+      <<: *anthropic_llm
+      label: "Claude Opus 4.7"
+      llm_model: claude-opus-4-7
+    anthropic-claude-opus-4-6:
+      <<: *anthropic_llm
+      label: "Claude Opus 4.6"
+      llm_model: claude-opus-4-6
+    anthropic-claude-sonnet-4-6:
+      <<: *anthropic_llm
+      label: "Claude Sonnet 4.6"
+      llm_model: claude-sonnet-4-6
+    anthropic-claude-haiku-4-5:
+      <<: *anthropic_llm
+      label: "Claude Haiku 4.5"
+      llm_model: claude-haiku-4-5
+    anthropic-claude-mythos-5:
+      <<: *anthropic_llm
+      label: "Claude Mythos 5"
+      availability: "limited access"
+      llm_model: claude-mythos-5
+
+    # Gemini model catalog and OpenAI compatibility verified 2026-06-20:
+    # https://ai.google.dev/gemini-api/docs/models
+    google-gemini-3-5-flash: &google_llm
+      label: "Gemini 3.5 Flash"
+      group: "Google Gemini"
+      provider: "Google Gemini"
+      availability: stable
+      requires: [GEMINI_API_KEY]
+      capabilities: [text]
+      llm: openai-compatible
+      llm_base_url: https://generativelanguage.googleapis.com/v1beta/openai
+      llm_api_key_env: GEMINI_API_KEY
+      llm_model: gemini-3.5-flash
+      llm_temperature: 0.4
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: true
+    google-gemini-3-1-pro-preview:
+      <<: *google_llm
+      label: "Gemini 3.1 Pro"
+      availability: preview
+      llm_model: gemini-3.1-pro-preview
+    google-gemini-3-flash-preview:
+      <<: *google_llm
+      label: "Gemini 3 Flash"
+      availability: preview
+      llm_model: gemini-3-flash-preview
+    google-gemini-3-1-flash-lite:
+      <<: *google_llm
+      label: "Gemini 3.1 Flash-Lite"
+      llm_model: gemini-3.1-flash-lite
+    google-gemini-2-5-pro:
+      <<: *google_llm
+      label: "Gemini 2.5 Pro"
+      llm_model: gemini-2.5-pro
+    google-gemini-2-5-flash:
+      <<: *google_llm
+      label: "Gemini 2.5 Flash"
+      llm_model: gemini-2.5-flash
+    google-gemini-2-5-flash-lite:
+      <<: *google_llm
+      label: "Gemini 2.5 Flash-Lite"
+      llm_model: gemini-2.5-flash-lite
+
+    # xAI model catalog verified 2026-06-20:
+    # https://docs.x.ai/developers/models
+    xai-grok-4-3: &xai_llm
+      label: "Grok 4.3"
+      group: "xAI"
+      provider: "xAI"
+      availability: stable
+      requires: [XAI_API_KEY]
+      capabilities: [text]
+      llm: openai-compatible
+      llm_base_url: https://api.x.ai/v1
+      llm_api_key_env: XAI_API_KEY
+      llm_model: grok-4.3
+      llm_temperature: 0.4
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: true
+    xai-grok-4-20-multi-agent:
+      <<: *xai_llm
+      label: "Grok 4.20 Multi-Agent"
+      llm_model: grok-4.20-multi-agent-0309
+    xai-grok-4-20-reasoning:
+      <<: *xai_llm
+      label: "Grok 4.20 Reasoning"
+      llm_model: grok-4.20-0309-reasoning
+    xai-grok-4-20-non-reasoning:
+      <<: *xai_llm
+      label: "Grok 4.20 Non-Reasoning"
+      llm_model: grok-4.20-0309-non-reasoning
+    deepseek-direct:
+      label: "DeepSeek China"
+      group: "Chinese price"
+      llm: openai-compatible
+      llm_base_url: https://api.deepseek.com
+      llm_api_key_env: DEEPSEEK_API_KEY
+      llm_model: deepseek-v4-flash
+      llm_temperature: 0.55
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+    byteplus-deepseek:
+      label: "BytePlus DeepSeek"
+      group: "International"
+      llm: openai-compatible
+      llm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      llm_api_key_env: BYTEPLUS_ARK_API_KEY
+      llm_model: deepseek-v4-flash-260425
+      llm_temperature: 0.55
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    volcengine-deepseek-v4-flash:
+      label: "Volcengine DeepSeek V4 Flash"
+      group: "Chinese price"
+      llm: openai-compatible
+      llm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      llm_api_key_env: ARK_API_KEY
+      llm_model: deepseek-v4-flash-260425
+      llm_temperature: 0.55
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    volcengine-deepseek-v4-pro:
+      label: "Volcengine DeepSeek V4 Pro"
+      group: "Chinese price"
+      llm: openai-compatible
+      llm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      llm_api_key_env: ARK_API_KEY
+      llm_model: deepseek-v4-pro-260425
+      llm_temperature: 0.55
+      # Reasoning model: a rich (esp. 中文) prompt can generate for many minutes. Requests stream
+      # by default (llm_stream), so this timeout is a per-chunk *stall* guard, not a whole-
+      # generation deadline — it only trips if the server sends no token for this long. Kept
+      # generous so a slow first token (reasoning warm-up) never aborts a healthy generation.
+      llm_timeout_s: 600.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+      llm_cost_per_million_input: 12.0
+      llm_cost_per_million_cached_input: 1.0
+      llm_cost_per_million_output: 24.0
+      llm_cost_currency: CNY
+      llm_usd_per_native_unit: 0.14
+      llm_pricing_source: https://www.volcengine.com/docs/82379/1544106
+      llm_pricing_as_of: "2026-07-01"
+    volcengine-seed-2-pro:
+      label: "Volcengine Doubao Seed 2.0 Pro"
+      group: "Chinese price"
+      llm: openai-compatible
+      llm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      llm_api_key_env: ARK_API_KEY
+      llm_model: doubao-seed-2-0-pro-260215
+      llm_temperature: 0.55
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    volcengine-seed-2-lite:
+      label: "Volcengine Doubao Seed 2.0 Lite"
+      group: "Chinese price"
+      llm: openai-compatible
+      llm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      llm_api_key_env: ARK_API_KEY
+      llm_model: doubao-seed-2-0-lite-260428
+      llm_temperature: 0.55
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    volcengine-seed-2-mini:
+      label: "Volcengine Doubao Seed 2.0 Mini"
+      group: "Chinese price"
+      llm: openai-compatible
+      llm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      llm_api_key_env: ARK_API_KEY
+      llm_model: doubao-seed-2-0-mini-260428
+      llm_temperature: 0.55
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    volcengine-seed-2-code-preview:
+      label: "Volcengine Doubao Seed 2.0 Code Preview"
+      group: "Chinese price"
+      llm: openai-compatible
+      llm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      llm_api_key_env: ARK_API_KEY
+      llm_model: doubao-seed-2-0-code-preview-260215
+      llm_temperature: 0.35
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    volcengine-seed-1-8:
+      label: "Volcengine Doubao Seed 1.8"
+      group: "Chinese price"
+      llm: openai-compatible
+      llm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      llm_api_key_env: ARK_API_KEY
+      llm_model: doubao-seed-1-8-251228
+      llm_temperature: 0.45
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    volcengine-seed-1-6:
+      label: "Volcengine Doubao Seed 1.6"
+      group: "Chinese price"
+      llm: openai-compatible
+      llm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      llm_api_key_env: ARK_API_KEY
+      llm_model: doubao-seed-1-6-251015
+      llm_temperature: 0.45
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    volcengine-seed-1-6-flash:
+      label: "Volcengine Doubao Seed 1.6 Flash"
+      group: "Chinese price"
+      llm: openai-compatible
+      llm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      llm_api_key_env: ARK_API_KEY
+      llm_model: doubao-seed-1-6-flash-250828
+      llm_temperature: 0.45
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    volcengine-seed-1-6-vision:
+      label: "Volcengine Doubao Seed 1.6 Vision"
+      group: "Chinese price"
+      llm: openai-compatible
+      llm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      llm_api_key_env: ARK_API_KEY
+      llm_model: doubao-seed-1-6-vision-250815
+      llm_temperature: 0.45
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    volcengine-doubao-1-5-vision-pro:
+      label: "Volcengine Doubao 1.5 Vision Pro"
+      group: "Chinese price"
+      llm: openai-compatible
+      llm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      llm_api_key_env: ARK_API_KEY
+      llm_model: doubao-1-5-vision-pro-32k-250115
+      llm_temperature: 0.45
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    byteplus-deepseek-v4-pro:
+      label: "BytePlus DeepSeek V4 Pro"
+      group: "International"
+      llm: openai-compatible
+      llm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      llm_api_key_env: BYTEPLUS_ARK_API_KEY
+      llm_model: deepseek-v4-pro-260425
+      llm_temperature: 0.55
+      # Reasoning model: a rich (esp. 中文) prompt can generate for many minutes. Requests stream
+      # by default (llm_stream), so this timeout is a per-chunk *stall* guard, not a whole-
+      # generation deadline — it only trips if the server sends no token for this long. Kept
+      # generous so a slow first token (reasoning warm-up) never aborts a healthy generation.
+      llm_timeout_s: 600.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    byteplus-seed-2-pro:
+      label: "BytePlus Seed 2.0 Pro"
+      group: "International"
+      llm: openai-compatible
+      llm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      llm_api_key_env: BYTEPLUS_ARK_API_KEY
+      llm_model: seed-2-0-pro-260328
+      llm_temperature: 0.55
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    byteplus-seed-2-lite:
+      label: "BytePlus Seed 2.0 Lite"
+      group: "International"
+      llm: openai-compatible
+      llm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      llm_api_key_env: BYTEPLUS_ARK_API_KEY
+      llm_model: seed-2-0-lite-260428
+      llm_temperature: 0.55
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    byteplus-seed-2-mini:
+      label: "BytePlus Seed 2.0 Mini"
+      group: "International"
+      llm: openai-compatible
+      llm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      llm_api_key_env: BYTEPLUS_ARK_API_KEY
+      llm_model: seed-2-0-mini-260428
+      llm_temperature: 0.55
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    byteplus-seed-2-code-preview:
+      label: "BytePlus Seed 2.0 Code Preview"
+      group: "International"
+      llm: openai-compatible
+      llm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      llm_api_key_env: BYTEPLUS_ARK_API_KEY
+      llm_model: seed-2-0-code-preview-260328
+      llm_temperature: 0.35
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    byteplus-seed-1-8:
+      label: "BytePlus Seed 1.8"
+      group: "International"
+      llm: openai-compatible
+      llm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      llm_api_key_env: BYTEPLUS_ARK_API_KEY
+      llm_model: seed-1-8-251228
+      llm_temperature: 0.45
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    byteplus-seed-1-6:
+      label: "BytePlus Seed 1.6"
+      group: "International"
+      llm: openai-compatible
+      llm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      llm_api_key_env: BYTEPLUS_ARK_API_KEY
+      llm_model: seed-1-6-250915
+      llm_temperature: 0.45
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    byteplus-seed-1-6-flash:
+      label: "BytePlus Seed 1.6 Flash"
+      group: "International"
+      llm: openai-compatible
+      llm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      llm_api_key_env: BYTEPLUS_ARK_API_KEY
+      llm_model: seed-1-6-flash-250715
+      llm_temperature: 0.45
+      llm_timeout_s: 180.0
+      llm_max_json_attempts: 3
+      llm_json_response_format: false
+    openai-gpt-4-1:
+      label: "OpenAI GPT-4.1"
+      group: "US / global"
+      llm: openai-compatible
+      llm_base_url: https://api.openai.com/v1
+      llm_api_key_env: OPENAI_API_KEY
+      llm_model: gpt-4.1
+      llm_temperature: 0.4
+    ollama-local:
+      label: "Local Ollama"
+      group: "Local / open"
+      llm: openai-compatible
+      llm_base_url: http://localhost:11434/v1
+      llm_model: qwen2.5:7b-instruct
+      llm_temperature: 0.4
+    vllm-cloud:
+      label: "OpenAI-compatible vLLM"
+      group: "Local / open"
+      llm: openai-compatible
+      llm_base_url: http://localhost:8000/v1
+      llm_api_key_env: VLLM_API_KEY
+      llm_model: Qwen/Qwen2.5-14B-Instruct
+      llm_temperature: 0.4
+
+  image:
+    fake:
+      label: "Fake image"
+      group: "Testing / offline"
+      provider: "Testing / offline"
+      capabilities: [image_generation]
+      image: fake
+    gemini:
+      label: "Gemini 3.1 Flash Image"
+      group: "Google Gemini"
+      provider: "Google Gemini"
+      availability: stable
+      requires: [GEMINI_API_KEY]
+      capabilities: [image_generation, image_editing, reference_images]
+      image: gemini
+      image_model: gemini-3.1-flash-image
+      image_max_reference_images: 14
+      image_supports_storyboard_grid: true
+    gemini-3-pro-image:
+      label: "Gemini 3 Pro Image"
+      group: "Google Gemini"
+      provider: "Google Gemini"
+      availability: stable
+      requires: [GEMINI_API_KEY]
+      capabilities: [image_generation, image_editing, reference_images]
+      image: gemini
+      image_model: gemini-3-pro-image
+      image_max_reference_images: 14
+      image_supports_storyboard_grid: true
+    gemini-2-5-flash-image:
+      label: "Gemini 2.5 Flash Image"
+      group: "Google Gemini"
+      provider: "Google Gemini"
+      availability: stable
+      requires: [GEMINI_API_KEY]
+      capabilities: [image_generation, image_editing, reference_images]
+      image: gemini
+      image_model: gemini-2.5-flash-image
+      image_max_reference_images: 3
+    imagen:
+      label: "Imagen"
+      group: "US / global"
+      image: imagen
+      image_model: imagen-4.0-fast-generate-001
+    openai-image-2:
+      label: "OpenAI image-2"
+      group: "OpenAI"
+      provider: "OpenAI"
+      availability: stable
+      requires: [OPENAI_API_KEY]
+      capabilities: [image_generation, image_editing, reference_images]
+      image: openai
+      image_model: gpt-image-2
+      image_size: "1536x1024"
+      image_quality: medium
+      image_max_reference_images: 10
+      image_max_prompt_length: 32000
+      image_prompt_length_unit: characters
+      image_cost_per_image: 0.08
+      image_supports_storyboard_grid: true
+    xai-grok-imagine-image:
+      label: "Grok Imagine Image Quality"
+      group: "xAI"
+      provider: "xAI"
+      availability: stable
+      requires: [XAI_API_KEY]
+      capabilities: [image_generation, image_editing, reference_images]
+      image: xai
+      image_model: grok-imagine-image-quality
+      image_base_url: https://api.x.ai/v1
+      image_api_key_env: XAI_API_KEY
+      image_resolution: 2k
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 3
+      image_max_prompt_length: 8000
+      image_prompt_length_unit: utf8_bytes
+      image_timeout_s: 300.0
+      image_max_retries: 3
+      image_retry_backoff_s: 1.5
+      xai_use_files_api: true
+      xai_file_recovery_timeout_s: 300.0
+      xai_file_poll_interval_s: 5.0
+      image_cost_per_image: 0.07
+      image_cost_per_input_image: 0.01
+      image_pricing_source: https://docs.x.ai/developers/models
+      image_pricing_as_of: "2026-07-01"
+    doubao-seedream:
+      label: "Doubao Seedream"
+      group: "Chinese price"
+      image: doubao
+      image_model: doubao-seedream-4-0-250828
+      image_base_url: https://ark.cn-beijing.volces.com/api/v3
+      image_api_key_env: ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 6
+      image_cost_per_image_cny: 0.2
+      image_cny_to_usd: 0.14
+    doubao-seedream-5:
+      label: "Doubao Seedream 5.0"
+      group: "Chinese price"
+      image: doubao
+      image_model: doubao-seedream-5-0-260128
+      image_base_url: https://ark.cn-beijing.volces.com/api/v3
+      image_api_key_env: ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 14
+      image_cost_per_image_cny: 0.2
+      image_cny_to_usd: 0.14
+      image_supports_storyboard_grid: true
+    doubao-seedream-5-lite:
+      label: "Doubao Seedream 5.0 Lite"
+      group: "Chinese price"
+      image: doubao
+      image_model: doubao-seedream-5-0-lite-260128
+      image_base_url: https://ark.cn-beijing.volces.com/api/v3
+      image_api_key_env: ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 14
+      image_cost_per_image_cny: 0.2
+      image_cny_to_usd: 0.14
+      image_supports_storyboard_grid: true
+    doubao-seedream-4-5:
+      label: "Doubao Seedream 4.5"
+      group: "Chinese price"
+      image: doubao
+      image_model: doubao-seedream-4-5-251128
+      image_base_url: https://ark.cn-beijing.volces.com/api/v3
+      image_api_key_env: ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 6
+      image_cost_per_image_cny: 0.2
+      image_cny_to_usd: 0.14
+      image_supports_storyboard_grid: true
+    doubao-seedream-4:
+      label: "Doubao Seedream 4.0"
+      group: "Chinese price"
+      image: doubao
+      image_model: doubao-seedream-4-0-250828
+      image_base_url: https://ark.cn-beijing.volces.com/api/v3
+      image_api_key_env: ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 6
+      image_cost_per_image_cny: 0.2
+      image_cny_to_usd: 0.14
+      image_supports_storyboard_grid: true
+    doubao-seedream-3:
+      label: "Doubao Seedream 3.0 T2I"
+      group: "Chinese price"
+      image: doubao
+      image_model: doubao-seedream-3.0-t2i
+      image_base_url: https://ark.cn-beijing.volces.com/api/v3
+      image_api_key_env: ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 0
+      image_cost_per_image_cny: 0.2
+      image_cny_to_usd: 0.14
+    byteplus-seedream:
+      label: "BytePlus Seedream"
+      group: "International"
+      image: byteplus-seedream
+      image_model: seedream-4-0-250828
+      image_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      image_api_key_env: BYTEPLUS_ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 6
+      image_cost_per_image_usd: 0.03
+    byteplus-seedream-5:
+      label: "BytePlus Seedream 5.0"
+      group: "International"
+      image: byteplus-seedream
+      image_model: seedream-5-0-260128
+      image_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      image_api_key_env: BYTEPLUS_ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 14
+      image_cost_per_image_usd: 0.03
+      image_supports_storyboard_grid: true
+    byteplus-seedream-5-lite:
+      label: "BytePlus Seedream 5.0 Lite"
+      group: "International"
+      image: byteplus-seedream
+      image_model: seedream-5-0-lite-260128
+      image_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      image_api_key_env: BYTEPLUS_ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 14
+      image_cost_per_image_usd: 0.03
+      image_supports_storyboard_grid: true
+    byteplus-seedream-4-5:
+      label: "BytePlus Seedream 4.5"
+      group: "International"
+      image: byteplus-seedream
+      image_model: seedream-4-5-251128
+      image_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      image_api_key_env: BYTEPLUS_ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 6
+      image_cost_per_image_usd: 0.03
+      image_supports_storyboard_grid: true
+    byteplus-seedream-4:
+      label: "BytePlus Seedream 4.0"
+      group: "International"
+      image: byteplus-seedream
+      image_model: seedream-4-0-250828
+      image_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      image_api_key_env: BYTEPLUS_ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 6
+      image_cost_per_image_usd: 0.03
+      image_supports_storyboard_grid: true
+    byteplus-seedream-3:
+      label: "BytePlus Seedream 3.0 T2I"
+      group: "International"
+      image: byteplus-seedream
+      image_model: seedream-3-0-t2i-250415
+      image_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      image_api_key_env: BYTEPLUS_ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 0
+      image_cost_per_image_usd: 0.03
+    byteplus-seededit-3:
+      label: "BytePlus SeedEdit 3.0 I2I"
+      group: "International"
+      image: byteplus-seedream
+      image_model: seededit-3-0-i2i-250628
+      image_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      image_api_key_env: BYTEPLUS_ARK_API_KEY
+      image_size: "2K"
+      image_aspect_ratio: "16:9"
+      image_max_reference_images: 6
+      image_cost_per_image_usd: 0.03
+    manual-midjourney:
+      label: "Manual Midjourney"
+      group: "Manual import"
+      image: manual-midjourney
+      image_model: manual-midjourney-import
+      image_aspect_ratio: "16:9"
+
+  video:
+    fake:
+      label: "Fake video"
+      group: "Testing / offline"
+      provider: "Testing / offline"
+      capabilities: [video_generation]
+      video: fake
+    # Gemini Veo catalog verified 2026-06-20:
+    # https://ai.google.dev/gemini-api/docs/video
+    gemini-veo-3-1:
+      label: "Veo 3.1"
+      group: "Google Gemini"
+      provider: "Google Gemini"
+      availability: preview
+      requires: [GEMINI_API_KEY]
+      capabilities: [video_generation, image_to_video, reference_images, last_frame, audio]
+      video: gemini-veo
+      video_model: veo-3.1-generate-preview
+      video_api_key_env: GEMINI_API_KEY
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: true
+      video_cost_per_second: 0.40
+      video_max_image_inputs: 4
+      video_include_reference_images: true
+      video_include_last_frame_ref: true
+    gemini-veo-3-1-fast:
+      label: "Veo 3.1 Fast"
+      group: "Google Gemini"
+      provider: "Google Gemini"
+      availability: preview
+      requires: [GEMINI_API_KEY]
+      capabilities: [video_generation, image_to_video, reference_images, last_frame, audio]
+      video: gemini-veo
+      video_model: veo-3.1-fast-generate-preview
+      video_api_key_env: GEMINI_API_KEY
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: true
+      video_cost_per_second: 0.10
+      video_max_image_inputs: 4
+      video_include_reference_images: true
+      video_include_last_frame_ref: true
+    gemini-veo-3-1-lite:
+      label: "Veo 3.1 Lite"
+      group: "Google Gemini"
+      provider: "Google Gemini"
+      availability: preview
+      requires: [GEMINI_API_KEY]
+      capabilities: [video_generation, image_to_video, audio]
+      video: gemini-veo
+      video_model: veo-3.1-lite-generate-preview
+      video_api_key_env: GEMINI_API_KEY
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: true
+      video_cost_per_second: 0.05
+      video_max_image_inputs: 1
+      video_include_reference_images: false
+      video_include_last_frame_ref: false
+    # xAI Imagine docs verified 2026-06-24:
+    # https://docs.x.ai/developers/model-capabilities/video
+    xai-grok-imagine-video:
+      label: "Grok Imagine Video"
+      group: "xAI"
+      provider: "xAI"
+      availability: stable
+      requires: [XAI_API_KEY]
+      capabilities: [video_generation, image_to_video]
+      video: xai
+      video_model: grok-imagine-video
+      video_base_url: https://api.x.ai/v1
+      video_api_key_env: XAI_API_KEY
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_cost_per_second: 0.07
+      video_cost_per_input_image: 0.002
+    xai-grok-imagine-video-1-5:
+      label: "Grok Imagine Video 1.5"
+      group: "xAI"
+      provider: "xAI"
+      availability: stable
+      requires: [XAI_API_KEY]
+      capabilities: [video_generation, image_to_video]
+      video: xai
+      video_model: grok-imagine-video-1.5
+      video_base_url: https://api.x.ai/v1
+      video_api_key_env: XAI_API_KEY
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_cost_per_second: 0.14
+      video_cost_per_input_image: 0.01
+    fal-seedance:
+      label: "fal Seedance"
+      group: "US / global"
+      video: fal
+      video_model: bytedance/seedance-2.0/fast/reference-to-video
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: true
+      video_supports_storyboard_grid: true
+    china-seedance-fast:
+      label: "Chinese Seedance Fast"
+      group: "Chinese price"
+      video: volcengine
+      video_model: doubao-seedance-2-0-fast-260128
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: true
+      video_return_last_frame: true
+      video_cost_per_million_tokens_cny: 37.0
+      video_cny_to_usd: 0.14
+      video_pricing_source: https://www.volcengine.com/docs/82379/1544106
+      video_pricing_as_of: "2026-07-01"
+      video_supports_storyboard_grid: true
+    china-seedance-hq:
+      label: "Chinese Seedance HQ"
+      group: "Chinese price"
+      video: volcengine
+      video_model: doubao-seedance-2-0-260128
+      video_resolution: 1080p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: true
+      video_return_last_frame: true
+      video_cost_per_million_tokens_cny: 51.0
+      video_cny_to_usd: 0.14
+      video_pricing_source: https://www.volcengine.com/docs/82379/1544106
+      video_pricing_as_of: "2026-07-01"
+      video_supports_storyboard_grid: true
+    china-seedance-mini:
+      label: "Chinese Seedance Mini"
+      group: "Chinese price"
+      video: volcengine
+      video_model: doubao-seedance-2-0-mini-260615
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: true
+      video_return_last_frame: true
+      video_cost_per_million_tokens_cny: 23.0
+      video_cny_to_usd: 0.14
+      video_pricing_source: https://www.volcengine.com/docs/82379/1544106
+      video_pricing_as_of: "2026-07-01"
+      video_cost_per_million_tokens_cny: 37.0
+      video_cny_to_usd: 0.14
+      video_supports_storyboard_grid: true
+    china-seedance-1-5-pro:
+      label: "Chinese Seedance 1.5 Pro"
+      group: "Chinese price"
+      video: volcengine
+      video_model: doubao-seedance-1-5-pro-251215
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: true
+      video_return_last_frame: true
+      video_cost_per_million_tokens_cny: 37.0
+      video_cny_to_usd: 0.14
+      video_supports_storyboard_grid: true
+    china-seedance-1-0-pro:
+      label: "Chinese Seedance 1.0 Pro"
+      group: "Chinese price"
+      video: volcengine
+      video_model: doubao-seedance-1-0-pro-250528
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: false
+      video_return_last_frame: true
+      video_cost_per_million_tokens_cny: 37.0
+      video_cny_to_usd: 0.14
+      video_supports_storyboard_grid: true
+    china-seedance-1-0-pro-fast:
+      label: "Chinese Seedance 1.0 Pro Fast"
+      group: "Chinese price"
+      video: volcengine
+      video_model: doubao-seedance-1-0-pro-fast-251015
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: false
+      video_return_last_frame: true
+      video_cost_per_million_tokens_cny: 37.0
+      video_cny_to_usd: 0.14
+      video_supports_storyboard_grid: true
+    # byteplus-seedance profiles intentionally omit video_supports_storyboard_grid:
+    # these profiles use include_reference_images=false and include_last_frame_ref=false,
+    # which conflicts with the multi-image grid input required for storyboard grid mode.
+    byteplus-seedance-fast:
+      label: "International Seedance Fast"
+      group: "International"
+      video: byteplus
+      video_model: dreamina-seedance-2-0-fast-260128
+      video_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      video_api_key_env: BYTEPLUS_ARK_API_KEY
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: true
+      video_return_last_frame: true
+      video_cost_per_1k_tokens_usd: 0.0056
+      video_timeout_s: 240.0
+      video_include_reference_images: false
+      video_include_last_frame_ref: false
+    byteplus-seedance-hq:
+      label: "International Seedance HQ"
+      group: "International"
+      video: byteplus
+      video_model: dreamina-seedance-2-0-260128
+      video_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      video_api_key_env: BYTEPLUS_ARK_API_KEY
+      video_resolution: 1080p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: true
+      video_return_last_frame: true
+      video_cost_per_1k_tokens_usd: 0.0056
+      video_timeout_s: 240.0
+      video_include_reference_images: false
+      video_include_last_frame_ref: false
+    byteplus-seedance-mini:
+      label: "International Seedance Mini"
+      group: "International"
+      video: byteplus
+      video_model: dreamina-seedance-2-0-mini-260615
+      video_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      video_api_key_env: BYTEPLUS_ARK_API_KEY
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: true
+      video_return_last_frame: true
+      video_cost_per_1k_tokens_usd: 0.0056
+      video_timeout_s: 240.0
+      video_include_reference_images: false
+      video_include_last_frame_ref: false
+    byteplus-seedance-1-5-pro:
+      label: "International Seedance 1.5 Pro"
+      group: "International"
+      video: byteplus
+      video_model: seedance-1-5-pro-251215
+      video_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      video_api_key_env: BYTEPLUS_ARK_API_KEY
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: true
+      video_return_last_frame: true
+      video_cost_per_1k_tokens_usd: 0.0056
+      video_timeout_s: 240.0
+      video_include_reference_images: false
+      video_include_last_frame_ref: false
+    byteplus-seedance-1-0-pro:
+      label: "International Seedance 1.0 Pro"
+      group: "International"
+      video: byteplus
+      video_model: seedance-1-0-pro-250528
+      video_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      video_api_key_env: BYTEPLUS_ARK_API_KEY
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: false
+      video_return_last_frame: true
+      video_cost_per_1k_tokens_usd: 0.0056
+      video_timeout_s: 240.0
+      video_include_reference_images: false
+      video_include_last_frame_ref: false
+    byteplus-seedance-1-0-pro-fast:
+      label: "International Seedance 1.0 Pro Fast"
+      group: "International"
+      video: byteplus
+      video_model: seedance-1-0-pro-fast-251015
+      video_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      video_api_key_env: BYTEPLUS_ARK_API_KEY
+      video_resolution: 720p
+      video_aspect_ratio: "16:9"
+      video_generate_audio: false
+      video_return_last_frame: true
+      video_cost_per_1k_tokens_usd: 0.0056
+      video_timeout_s: 240.0
+      video_include_reference_images: false
+      video_include_last_frame_ref: false
+
+  vlm:
+    fake:
+      label: "Fake (offline)"
+      group: "Testing / offline"
+      provider: "Testing / offline"
+      capabilities: [video_qc]
+      vlm: fake
+    openai-gpt-5-5-qc: &openai_vlm
+      label: "GPT-5.5 (vision)"
+      group: "OpenAI"
+      provider: "OpenAI"
+      availability: stable
+      requires: [OPENAI_API_KEY]
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: openai-vlm
+      vlm_base_url: https://api.openai.com/v1
+      vlm_api_key_env: OPENAI_API_KEY
+      vlm_model: gpt-5.5
+      vlm_max_frames: 4
+      vlm_detail: low
+      vlm_json_response_format: true
+    openai-gpt-5-4-mini-qc:
+      <<: *openai_vlm
+      label: "GPT-5.4 Mini (vision)"
+      vlm_model: gpt-5.4-mini
+    xai-grok-4-3-qc:
+      label: "Grok 4.3 (vision)"
+      group: "xAI"
+      provider: "xAI"
+      availability: stable
+      requires: [XAI_API_KEY]
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: xai-vlm
+      vlm_base_url: https://api.x.ai/v1
+      vlm_api_key_env: XAI_API_KEY
+      vlm_model: grok-4.3
+      vlm_max_frames: 4
+      vlm_detail: low
+      vlm_json_response_format: true
+      vlm_cost_per_million_input: 1.25
+      vlm_cost_per_million_cached_input: 1.25
+      vlm_cost_per_million_output: 2.50
+      vlm_cost_currency: USD
+      vlm_usd_per_native_unit: 1.0
+      vlm_pricing_source: https://docs.x.ai/developers/models
+      vlm_pricing_as_of: "2026-07-01"
+    gemini-3-5-flash-qc:
+      label: "Gemini 3.5 Flash (vision)"
+      group: "Google Gemini"
+      provider: "Google Gemini"
+      availability: stable
+      requires: [GEMINI_API_KEY]
+      capabilities: [image_vision, direct_video]
+      vlm: gemini
+      vlm_model: gemini-3.5-flash
+      vlm_media_resolution: low
+      vlm_inline_video_max_mb: 20.0
+    gemini-3-1-pro-qc:
+      label: "Gemini 3.1 Pro (vision)"
+      group: "Google Gemini"
+      provider: "Google Gemini"
+      availability: preview
+      requires: [GEMINI_API_KEY]
+      capabilities: [image_vision, direct_video]
+      vlm: gemini
+      vlm_model: gemini-3.1-pro-preview
+      vlm_media_resolution: low
+      vlm_inline_video_max_mb: 20.0
+    gemini-cheap:
+      label: "Gemini cheap (vision)"
+      group: "US / global"
+      capabilities: [image_vision, direct_video]
+      vlm: gemini
+      vlm_model: gemini-2.5-flash-lite
+      vlm_media_resolution: low
+      vlm_inline_video_max_mb: 20.0
+    anthropic-claude-opus-4-8-qc:
+      label: "Claude Opus 4.8 (vision)"
+      group: "Anthropic"
+      provider: "Anthropic"
+      availability: stable
+      requires: [ANTHROPIC_API_KEY]
+      capabilities: [image_vision, frame_vision]
+      vlm: anthropic
+      vlm_model: claude-opus-4-8
+    doubao-seed-2-lite-qc:
+      label: "Doubao Seed 2.0 Lite (vision)"
+      group: "Chinese price"
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: doubao-vlm
+      vlm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      vlm_api_key_env: ARK_API_KEY
+      vlm_model: doubao-seed-2-0-lite-260428
+      vlm_max_frames: 4
+      vlm_detail: low
+      vlm_json_response_format: false
+    doubao-seed-2-mini-qc:
+      label: "Doubao Seed 2.0 Mini (vision)"
+      group: "Chinese price"
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: doubao-vlm
+      vlm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      vlm_api_key_env: ARK_API_KEY
+      vlm_model: doubao-seed-2-0-mini-260428
+      vlm_max_frames: 4
+      vlm_detail: low
+      vlm_json_response_format: false
+    doubao-seed-2-pro-qc:
+      label: "Doubao Seed 2.0 Pro (vision)"
+      group: "Chinese price"
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: doubao-vlm
+      vlm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      vlm_api_key_env: ARK_API_KEY
+      vlm_model: doubao-seed-2-0-pro-260215
+      vlm_max_frames: 4
+      vlm_detail: low
+      vlm_json_response_format: false
+    doubao-seed-1-8-qc:
+      label: "Doubao Seed 1.8 (vision)"
+      group: "Chinese price"
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: doubao-vlm
+      vlm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      vlm_api_key_env: ARK_API_KEY
+      vlm_model: doubao-seed-1-8-251228
+      vlm_max_frames: 4
+      vlm_detail: low
+      vlm_json_response_format: false
+    doubao-seed-1-6-vision-qc:
+      label: "Doubao Seed 1.6 Vision"
+      group: "Chinese price"
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: doubao-vlm
+      vlm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      vlm_api_key_env: ARK_API_KEY
+      vlm_model: doubao-seed-1-6-vision-250815
+      vlm_max_frames: 4
+      vlm_detail: high
+      vlm_json_response_format: false
+    doubao-1-5-vision-pro-qc:
+      label: "Doubao 1.5 Vision Pro (vision)"
+      group: "Chinese price"
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: doubao-vlm
+      vlm_base_url: https://ark.cn-beijing.volces.com/api/v3
+      vlm_api_key_env: ARK_API_KEY
+      vlm_model: doubao-1-5-vision-pro-32k-250115
+      vlm_max_frames: 4
+      vlm_detail: high
+      vlm_json_response_format: false
+    byteplus-seed-2-lite-qc:
+      label: "BytePlus Seed 2.0 Lite (vision)"
+      group: "International"
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: byteplus-vlm
+      vlm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      vlm_api_key_env: BYTEPLUS_ARK_API_KEY
+      vlm_model: seed-2-0-lite-260428
+      vlm_max_frames: 4
+      vlm_detail: low
+      vlm_json_response_format: false
+    byteplus-seed-2-mini-qc:
+      label: "BytePlus Seed 2.0 Mini (vision)"
+      group: "International"
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: byteplus-vlm
+      vlm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      vlm_api_key_env: BYTEPLUS_ARK_API_KEY
+      vlm_model: seed-2-0-mini-260428
+      vlm_max_frames: 4
+      vlm_detail: low
+      vlm_json_response_format: false
+    byteplus-seed-2-pro-qc:
+      label: "BytePlus Seed 2.0 Pro (vision)"
+      group: "International"
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: byteplus-vlm
+      vlm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      vlm_api_key_env: BYTEPLUS_ARK_API_KEY
+      vlm_model: seed-2-0-pro-260328
+      vlm_max_frames: 4
+      vlm_detail: low
+      vlm_json_response_format: false
+    byteplus-seed-1-8-qc:
+      label: "BytePlus Seed 1.8 (vision)"
+      group: "International"
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: byteplus-vlm
+      vlm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      vlm_api_key_env: BYTEPLUS_ARK_API_KEY
+      vlm_model: seed-1-8-251228
+      vlm_max_frames: 4
+      vlm_detail: low
+      vlm_json_response_format: false
+    byteplus-seed-1-6-qc:
+      label: "BytePlus Seed 1.6 (vision)"
+      group: "International"
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: byteplus-vlm
+      vlm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      vlm_api_key_env: BYTEPLUS_ARK_API_KEY
+      vlm_model: seed-1-6-250915
+      vlm_max_frames: 4
+      vlm_detail: high
+      vlm_json_response_format: false
+    byteplus-seed-1-6-flash-qc:
+      label: "BytePlus Seed 1.6 Flash (vision)"
+      group: "International"
+      capabilities: [image_vision, frame_vision]
+      vlm: openai-compatible-vision
+      vlm_provider_name: byteplus-vlm
+      vlm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+      vlm_api_key_env: BYTEPLUS_ARK_API_KEY
+      vlm_model: seed-1-6-flash-250715
+      vlm_max_frames: 4
+      vlm_detail: high
+      vlm_json_response_format: false
+
+profiles:
+  # Offline, deterministic, zero-cost. The M0 default.
+  fake:
+    audio_mode: native_video
+    llm: fake
+    image: fake
+    video: fake
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # First real provider: native reference-conditioned Gemini image generation.
+  real-image:
+    llm: fake
+    image: gemini
+    image_model: gemini-3.1-flash-image   # alternate: image: imagen / imagen-4.0-fast-generate-001
+    video: fake
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # OpenAI GPT Image 2 smoke path. Requires OPENAI_API_KEY and organization/model access.
+  # The provider uses /images/generations for text-only calls and /images/edits when
+  # reference uploads are available.
+  real-image-openai:
+    llm: fake
+    image: openai
+    image_model: gpt-image-2
+    image_size: "1536x1024"
+    image_quality: medium
+    image_max_reference_images: 10
+    image_cost_per_image: 0.08
+    video: fake
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # Direct China-region Ark Seedream/Doubao image generation. Requires ARK_API_KEY
+  # and activation for the selected Seedream model in the Volcengine Ark console.
+  real-image-doubao:
+    llm: fake
+    image: doubao
+    image_model: doubao-seedream-4-0-250828
+    image_base_url: https://ark.cn-beijing.volces.com/api/v3
+    image_api_key_env: ARK_API_KEY
+    image_size: "2K"
+    image_aspect_ratio: "16:9"
+    image_max_reference_images: 6
+    image_cost_per_image_cny: 0.2
+    image_cny_to_usd: 0.14
+    video: fake
+    tts: fake
+    music: fake
+    vlm: fake
+    # Extract a custom user style (free text / uploaded image) into a reusable style dict
+    # via an Ark vision model. Only used when the project style is custom (--style-description
+    # / --style-image or the dashboard style box); preset styles never call it.
+    style_profiler: openai-compatible-vision
+    style_profiler_base_url: https://ark.cn-beijing.volces.com/api/v3
+    style_profiler_api_key_env: ARK_API_KEY
+    style_profiler_model: doubao-seed-2-0-lite-260428
+
+  # International BytePlus ModelArk Seedream path, for accounts exposing image models
+  # through BYTEPLUS_ARK_API_KEY.
+  real-image-byteplus-seedream:
+    llm: fake
+    image: byteplus-seedream
+    image_model: seedream-4-0-250828
+    image_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+    image_api_key_env: BYTEPLUS_ARK_API_KEY
+    image_size: "2K"
+    image_aspect_ratio: "16:9"
+    image_max_reference_images: 6
+    image_cost_per_image_usd: 0.03
+    video: fake
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # Manual Midjourney import path. This does not automate Midjourney; it writes
+  # *.midjourney.md request files, pauses, and resumes after you save the chosen image
+  # to the requested project artifact path.
+  manual-image-midjourney:
+    llm: fake
+    image: manual-midjourney
+    image_model: manual-midjourney-import
+    image_aspect_ratio: "16:9"
+    video: fake
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # First real image-to-video path: Gemini keyframes + fal Seedance video.
+  real-video:
+    audio_mode: native_video
+    llm: fake
+    image: gemini
+    image_model: gemini-3.1-flash-image
+    video: fal
+    video_model: bytedance/seedance-2.0/fast/reference-to-video
+    video_resolution: 720p
+    video_aspect_ratio: "16:9"
+    video_generate_audio: true
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # Manual Midjourney images/keyframes + direct Chinese-price Ark Seedance video.
+  # Use this when Ark rejects the generated keyframe path from other image providers;
+  # the pipeline stays image-to-video because every Midjourney result is imported as
+  # the actual project image artifact before video generation runs.
+  real-video-cn-midjourney:
+    audio_mode: native_video
+    llm: fake
+    image: manual-midjourney
+    image_model: manual-midjourney-import
+    image_aspect_ratio: "16:9"
+    video: volcengine
+    video_model: doubao-seedance-2-0-fast-260128
+    video_resolution: 720p
+    video_aspect_ratio: "16:9"
+    video_generate_audio: true
+    video_return_last_frame: true
+    video_cost_per_million_tokens_cny: 37.0
+    video_cny_to_usd: 0.14
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # Local/open-weight LLM through an OpenAI-compatible endpoint, commonly exposed by
+  # Ollama's /v1 compatibility layer. Starts with fake generation providers so you can
+  # validate story/script/bible JSON before spending on images or video.
+  local-llm-ollama:
+    llm: openai-compatible
+    llm_base_url: http://localhost:11434/v1
+    llm_model: qwen2.5:7b-instruct
+    llm_temperature: 0.4
+    image: fake
+    video: fake
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # Cloud GPU worker for open-weight LLMs served by vLLM/SGLang-style OpenAI-compatible
+  # APIs. Point llm_base_url/model at the rented worker.
+  cloud-llm-vllm:
+    llm: openai-compatible
+    llm_base_url: http://localhost:8000/v1
+    llm_api_key_env: VLLM_API_KEY
+    llm_model: Qwen/Qwen2.5-14B-Instruct
+    llm_temperature: 0.4
+    image: fake
+    video: fake
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # Hosted OpenAI-compatible LLM profile. The concrete model is intentionally config-only
+  # so GPT, Qianwen, Doubao, or hosted open-weight endpoints can be swapped without stage
+  # changes.
+  real-open-llm:
+    llm: openai-compatible
+    llm_base_url: https://api.openai.com/v1
+    llm_api_key_env: OPENAI_API_KEY
+    llm_model: gpt-4.1
+    llm_temperature: 0.4
+    image: fake
+    video: fake
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # Cheap real story/script/storyboard planning through DeepSeek's OpenAI-compatible API.
+  # Use this before paid video to inspect plot.json, script.json, shots.json, and prompts.
+  deepseek-story:
+    llm: openai-compatible
+    llm_base_url: https://api.deepseek.com
+    llm_api_key_env: DEEPSEEK_API_KEY
+    llm_model: deepseek-v4-flash
+    llm_temperature: 0.55
+    llm_timeout_s: 180.0
+    llm_max_json_attempts: 3
+    image: fake
+    video: fake
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # DeepSeek served inside BytePlus ModelArk, using the existing BytePlus key.
+  # Use this when your ModelArk console has activated deepseek-v4-flash-260425.
+  byteplus-deepseek-story:
+    llm: openai-compatible
+    llm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+    llm_api_key_env: BYTEPLUS_ARK_API_KEY
+    llm_model: deepseek-v4-flash-260425
+    llm_temperature: 0.55
+    llm_timeout_s: 180.0
+    llm_max_json_attempts: 3
+    llm_json_response_format: false
+    image: fake
+    video: fake
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # Direct Chinese-price Seedance path through Volcengine Ark.
+  # Requires ARK_API_KEY and model access in the cn-beijing Ark console.
+  # Alternatives: doubao-seedance-2-0-260128 (higher quality/cost),
+  # doubao-seedance-2-0-mini-260615 once API access is available.
+  real-video-cn:
+    audio_mode: native_video
+    llm: fake
+    image: gemini
+    image_model: gemini-3.1-flash-image
+    video: volcengine
+    video_model: doubao-seedance-2-0-fast-260128
+    video_resolution: 720p
+    video_aspect_ratio: "16:9"
+    video_generate_audio: true
+    video_return_last_frame: true
+    video_cost_per_million_tokens_cny: 37.0
+    video_cny_to_usd: 0.14
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # Same China-price Seedance path, but with cheap Gemini video-understanding QC.
+  # Requires GEMINI_API_KEY in addition to ARK_API_KEY.
+  real-video-cn-qc-cheap:
+    audio_mode: native_video
+    llm: fake
+    image: gemini
+    image_model: gemini-3.1-flash-image
+    video: volcengine
+    video_model: doubao-seedance-2-0-fast-260128
+    video_resolution: 720p
+    video_aspect_ratio: "16:9"
+    video_generate_audio: true
+    video_return_last_frame: true
+    video_cost_per_million_tokens_cny: 37.0
+    video_cny_to_usd: 0.14
+    tts: fake
+    music: fake
+    vlm: gemini
+    vlm_model: gemini-2.5-flash-lite
+    vlm_media_resolution: low
+    vlm_inline_video_max_mb: 20.0
+
+  # Chinese-price production path: DeepSeek for story/script/storyboard,
+  # Volcengine Ark Seedream/Doubao for image/keyframe generation, direct
+  # Volcengine Ark Seedance for video, and Doubao/Seed visual QC over sampled frames.
+  # Requires ARK_API_KEY with access to DeepSeek, Seedream, Seedance, and Seed VLM models.
+  real-video-cn-doubao-deepseek-qc-cheap:
+    audio_mode: native_video
+    llm: openai-compatible
+    llm_base_url: https://ark.cn-beijing.volces.com/api/v3
+    llm_api_key_env: ARK_API_KEY
+    llm_model: deepseek-v4-flash-260425
+    llm_temperature: 0.55
+    llm_timeout_s: 180.0
+    llm_max_json_attempts: 3
+    llm_json_response_format: false
+    image: doubao
+    image_model: doubao-seedream-4-0-250828
+    image_base_url: https://ark.cn-beijing.volces.com/api/v3
+    image_api_key_env: ARK_API_KEY
+    image_size: "2K"
+    image_aspect_ratio: "16:9"
+    image_max_reference_images: 6
+    image_cost_per_image_cny: 0.2
+    image_cny_to_usd: 0.14
+    video: volcengine
+    video_model: doubao-seedance-2-0-fast-260128
+    video_resolution: 720p
+    video_aspect_ratio: "16:9"
+    video_generate_audio: true
+    video_return_last_frame: true
+    video_cost_per_million_tokens_cny: 37.0
+    video_cny_to_usd: 0.14
+    tts: fake
+    music: fake
+    vlm: openai-compatible-vision
+    vlm_provider_name: doubao-vlm
+    vlm_base_url: https://ark.cn-beijing.volces.com/api/v3
+    vlm_api_key_env: ARK_API_KEY
+    vlm_model: doubao-seed-2-0-lite-260428
+    vlm_max_frames: 4
+    vlm_detail: low
+    vlm_json_response_format: false
+
+  # Higher-quality direct Ark path: the full (non-fast) Seedance model at 1080p with
+  # real Claude VLM-QC. Use this for the better-provider smoke test once the prompt loop
+  # is dialed in (it costs more per second than the -fast model). Requires ARK_API_KEY,
+  # GEMINI_API_KEY (keyframes). The legacy VLM field is unused by new pipelines.
+  real-video-cn-hq:
+    audio_mode: native_video
+    llm: fake
+    image: gemini
+    image_model: gemini-3.1-flash-image
+    video: volcengine
+    video_model: doubao-seedance-2-0-260128
+    video_resolution: 1080p
+    video_aspect_ratio: "16:9"
+    video_generate_audio: true
+    video_return_last_frame: true
+    video_cost_per_million_tokens_cny: 51.0
+    video_cny_to_usd: 0.14
+    video_pricing_source: https://www.volcengine.com/docs/82379/1544106
+    video_pricing_as_of: "2026-07-01"
+    tts: fake
+    music: fake
+    vlm: anthropic
+    vlm_model: claude-opus-4-8
+
+  # International BytePlus ModelArk Seedance path for smoke testing outside
+  # the China-region Ark account/key path. Requires BYTEPLUS_ARK_API_KEY and
+  # activation for the selected Dreamina Seedance model in BytePlus ModelArk.
+  # Default uses the fast model because some accounts expose mini as Playground-only.
+  # Alternative: Dreamina-Seedance-2.0 if the console shows API access for it.
+  real-video-intl:
+    audio_mode: native_video
+    llm: fake
+    image: gemini
+    image_model: gemini-3.1-flash-image
+    video: byteplus
+    video_model: dreamina-seedance-2-0-fast-260128
+    video_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+    video_api_key_env: BYTEPLUS_ARK_API_KEY
+    video_resolution: 720p
+    video_aspect_ratio: "16:9"
+    video_generate_audio: true
+    video_return_last_frame: true
+    video_cost_per_1k_tokens_usd: 0.0056
+    video_timeout_s: 240.0
+    video_include_reference_images: false
+    video_include_last_frame_ref: false
+    tts: fake
+    music: fake
+    vlm: fake
+
+  # Same BytePlus smoke-test path, but with cheap Gemini video-understanding QC.
+  # Requires GEMINI_API_KEY in addition to BYTEPLUS_ARK_API_KEY.
+  real-video-intl-qc-cheap:
+    audio_mode: native_video
+    llm: fake
+    image: gemini
+    image_model: gemini-3.1-flash-image
+    video: byteplus
+    video_model: dreamina-seedance-2-0-fast-260128
+    video_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+    video_api_key_env: BYTEPLUS_ARK_API_KEY
+    video_resolution: 720p
+    video_aspect_ratio: "16:9"
+    video_generate_audio: true
+    video_return_last_frame: true
+    video_cost_per_1k_tokens_usd: 0.0056
+    video_timeout_s: 240.0
+    video_include_reference_images: false
+    video_include_last_frame_ref: false
+    tts: fake
+    music: fake
+    vlm: gemini
+    vlm_model: gemini-2.5-flash-lite
+    vlm_media_resolution: low
+    vlm_inline_video_max_mb: 20.0
+
+  # DeepSeek story/script/storyboard + Gemini keyframes + BytePlus video + cheap Gemini QC.
+  real-video-intl-deepseek-qc-cheap:
+    audio_mode: native_video
+    llm: openai-compatible
+    llm_base_url: https://api.deepseek.com
+    llm_api_key_env: DEEPSEEK_API_KEY
+    llm_model: deepseek-v4-flash
+    llm_temperature: 0.55
+    llm_timeout_s: 180.0
+    llm_max_json_attempts: 3
+    image: gemini
+    image_model: gemini-3.1-flash-image
+    video: byteplus
+    video_model: dreamina-seedance-2-0-fast-260128
+    video_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+    video_api_key_env: BYTEPLUS_ARK_API_KEY
+    video_resolution: 720p
+    video_aspect_ratio: "16:9"
+    video_generate_audio: true
+    video_return_last_frame: true
+    video_cost_per_1k_tokens_usd: 0.0056
+    video_timeout_s: 240.0
+    video_include_reference_images: false
+    video_include_last_frame_ref: false
+    tts: fake
+    music: fake
+    vlm: gemini
+    vlm_model: gemini-2.5-flash-lite
+    vlm_media_resolution: low
+    vlm_inline_video_max_mb: 20.0
+
+  # Same paid international smoke path, but DeepSeek is served inside BytePlus ModelArk
+  # using BYTEPLUS_ARK_API_KEY instead of a separate official DeepSeek key.
+  real-video-intl-byteplus-deepseek-qc-cheap:
+    audio_mode: native_video
+    llm: openai-compatible
+    llm_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+    llm_api_key_env: BYTEPLUS_ARK_API_KEY
+    llm_model: deepseek-v4-flash-260425
+    llm_temperature: 0.55
+    llm_timeout_s: 180.0
+    llm_max_json_attempts: 3
+    llm_json_response_format: false
+    image: gemini
+    image_model: gemini-3.1-flash-image
+    video: byteplus
+    video_model: dreamina-seedance-2-0-fast-260128
+    video_base_url: https://ark.ap-southeast.bytepluses.com/api/v3
+    video_api_key_env: BYTEPLUS_ARK_API_KEY
+    video_resolution: 720p
+    video_aspect_ratio: "16:9"
+    video_generate_audio: true
+    video_return_last_frame: true
+    video_cost_per_1k_tokens_usd: 0.0056
+    video_timeout_s: 240.0
+    video_include_reference_images: false
+    video_include_last_frame_ref: false
+    tts: fake
+    music: fake
+    vlm: gemini
+    vlm_model: gemini-2.5-flash-lite
+    vlm_media_resolution: low
+    vlm_inline_video_max_mb: 20.0
+
+  # Real providers — wired in over later milestones; keys come from .env.
+  real:
+    audio_mode: native_video
+    llm: anthropic
+    image: gemini
+    image_model: gemini-3.1-flash-image
+    video: volcengine
+    video_model: doubao-seedance-2-0-fast-260128
+    video_resolution: 720p
+    video_aspect_ratio: "16:9"
+    video_generate_audio: true
+    video_return_last_frame: true
+    video_cost_per_million_tokens_cny: 37.0
+    video_cny_to_usd: 0.14
+    tts: elevenlabs
+    music: elevenlabs
+    vlm: anthropic
+
+# Image-prompt director (the LLM "prompt skill"): rewrites the compiled brief into a
+# dense, model-optimized image prompt so non-experts still get good images. Turn off to
+# fall back to sending the compiled brief verbatim (legacy behavior).
+image_prompt_director:
+  enabled: true
+knowledge_retrieval:
+  max_entries: 6
+  max_chars: 6000
+# Quality booster appended to every directed image prompt as a baseline.
+image_quality_baseline: >-
+  Render at the highest fidelity: sharp focus, coherent anatomy, correct hands and eyes,
+  natural skin and material texture, clean edges, controlled cinematic lighting, no text,
+  watermark, or logo.
+
+# Global visual style guide defaults (the bible stage refines this per project).
+# Each preset may carry a `prompt_playbook`: idiom guidance the director follows so each
+# look renders authentically (render-engine cues, signature materials, lighting, palette).
+default_style: cinematic
+style_presets:
+  cinematic:
+    look: cinematic
+    palette: natural
+    aspect_ratio: "16:9"
+    rendering: filmic naturalism
+    motion: measured live-action pacing
+    prompt_playbook: >-
+      Shoot like a feature film on anamorphic glass and large-format sensors: motivated,
+      directional key light with soft falloff, controlled contrast, gentle film grain and
+      filmic color science, shallow depth of field, real locations and practical textures.
+      Photoreal skin with pores, catchlights, and natural asymmetry. Avoid video-game CGI
+      sheen and flat on-camera lighting.
+  anime:
+    look: anime
+    palette: moonlit teal and warm brass
+    aspect_ratio: "16:9"
+    rendering: clean cel shading
+    line_style: crisp expressive ink lines
+    motion: controlled limited-animation timing
+    prompt_playbook: >-
+      Hand-drawn 2D anime / key-visual look: crisp confident line art, clean cel shading
+      with 2-3 tone steps, expressive large eyes, painterly background art with depth and
+      atmosphere, rim light and bloom. Think modern theatrical anime. Avoid 3D render,
+      photoreal skin, muddy gradients, and stiff symmetry.
+  "3d":
+    look: polished semi-realistic 3D CG animation, feature-film quality
+    palette: natural cinematic color that adapts to the scene and genre
+    aspect_ratio: "16:9"
+    rendering: cinematic PBR, subsurface-scattering skin, detailed layered costumes, groomed strand hair, refined materials
+    lighting: volumetric cinematic lighting with luminous atmosphere and controlled contrast
+    composition: depth-rich cinematic staging with believable scale and detailed environments
+    motion: graceful weighty performance, believable physics, responsive hair and cloth dynamics
+    notes: avoid plastic skin, rigid game-cutscene posing, exaggerated cartoon proportions, weak fabric detail, and weightless motion
+    prompt_playbook: >-
+      High-end 3D CG animated feature still, the look of a flagship animated movie rendered
+      in Unreal Engine 5 / Octane: semi-realistic stylized faces with subsurface-scattering
+      skin (not plastic), groomed strand hair, intricate layered costumes with simulated
+      cloth, leather, and metal, refined PBR materials and rim lighting, volumetric god rays
+      and luminous atmosphere, cinematic depth and believable scale. Adapt the setting,
+      wardrobe, architecture, and palette to the story's own world and genre — this look
+      spans any setting, from grounded modern drama to epic fantasy or sci-fi, not one
+      regional style. Steer hard away from: plastic skin, stiff game-cutscene posing, flat
+      cartoon proportions, flat fabric, and weightless cloth.
+  cartoon:
+    look: cartoon
+    palette: bright candy colors
+    aspect_ratio: "16:9"
+    rendering: soft rounded shapes
+    motion: snappy squash-and-stretch energy
+    prompt_playbook: >-
+      Playful modern 3D/2D cartoon (Pixar/DreamWorks-adjacent): bold rounded silhouettes,
+      exaggerated appealing proportions, clean readable shapes, saturated candy palette,
+      soft bouncy lighting and ambient occlusion, expressive faces. Avoid photoreal detail,
+      gritty texture, and horror lighting.
+  # Keyword recipe distilled from an expert MidJourney "云海之下" style set.
+  mj_celestial_epic:
+    look: ultra-real cinematic epic fantasy sci-fi
+    palette: celestial blues, atmospheric glow, iridescent sky veils
+    aspect_ratio: "16:9"
+    rendering: dreamlike realism, clean sharp image, crisp edges, no noise or grain
+    lighting: celestial light, god rays, dramatic cloudscape
+    composition: extreme wide view, grand panoramic composition, vast depth
+    motion: slow, majestic, weight-bearing camera moves
+    prompt_playbook: >-
+      Epic ultra-real fantasy sci-fi vista: extreme wide panoramic scale with vast depth and
+      tiny figures for scale, towering cloudscapes and celestial light, god rays piercing
+      sky veils, iridescent atmospheric glow, crisp clean rendering with no noise or grain,
+      dreamlike hyperreal detail. Awe and grandeur. Avoid clutter, flat lighting, and grain.
+
+# Product format presets. These shape script/storyboard planning but do not fork the
+# file-based pipeline.
+default_format: short_film
+product_formats:
+  # A single self-contained story → one video. The user sets its length (minutes);
+  # the target/min/max below are the "Auto" defaults when no length is given.
+  short_film:
+    label: "Film"
+    target_duration_s: 180
+    min_duration_s: 120
+    max_duration_s: 300
+    structure: "setup, complication, turn, resolution"
+    pacing: "cinematic scene pacing"
+  # Minimal, cheap format for validating real providers end-to-end with the
+  # fewest paid clips (a couple of short scenes). Hidden from the dashboard
+  # dropdown (ui_hidden) but still selectable from the CLI for smoke tests.
+  smoke_test:
+    label: "Smoke test"
+    ui_hidden: true
+    target_duration_s: 30
+    min_duration_s: 18
+    max_duration_s: 45
+    structure: "one quick setup and a single turn"
+    pacing: "minimal, for cheap real-provider validation"
+  # Non-narrative short video (clip) mode: one striking cinematic moment — a 抖音/TikTok
+  # style shot (slow-mo walk, rotating hero shot) — with characters + location but no
+  # plot/script/dialogue. Duration and clip count are per-project (see --clips/--clip-seconds).
+  short_video:
+    label: "Clip"
+    mode: clip
+    # New runs default to one clip whose length the video model decides — the CLI and
+    # dashboard write clip_plan_mode (default/manual/auto) into model_config directly.
+    clip_count: 1
+    clip_seconds: null
+    clip_target_duration_s: auto
+    target_duration_s: 15
+    min_duration_s: 4
+    max_duration_s: 60
+    structure: "a concise visual progression with a hook, development, and payoff"
+    pacing: "visually driven, coherent long takes, minimal cutting"
+
+
+# Cost remains tracked as a normalized USD estimate. Set a number here to opt into
+# a hard per-project spending limit; new projects are unlimited by default.
+cost_cap: null

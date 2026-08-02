@@ -1,0 +1,165 @@
+# Cinematography recipe library — vetted SINGLE-MOVE camera-movement templates.
+#
+# Grounded in Seedance/Veo/Kling prompting guidance: ONE primary move per shot, a named
+# slow/eased speed, and movement only when it is motivated. Each recipe maps one camera
+# grammar to the intents it serves (适用场景). `selection: common` moves are the everyday
+# choice; `selection: reserved` moves are dramatic and used only when the beat earns them.
+# No move is banned — a full 360° orbit stays available as a single reserved slow move.
+# The planner picks a recipe `id` per shot; the video compiler weaves the chosen `prompt_*`
+# into the prompt. 中文/English are first-class (invariant #10). [brackets] are filled per shot.
+
+# ── Calm / common tier (日常运镜) ──────────────────────────────────────────
+- id: static_subject_moves
+  family: static
+  name_zh: 锁定机位（主体运动）
+  name_en: locked-off, subject carries the motion
+  motion_strength: static
+  selection: common
+  intents_en: [dialogue, intimacy, quiet performance, macro detail]
+  intents_zh: [对话, 亲密, 安静表演, 微距细节]
+  prompt_zh: "锁定机位，三脚架固定不动，由[主体]承担全部运动与表演，构图稳定，让观众专注于表演"
+  prompt_en: "locked-off tripod camera holding still; [the subject] carries all motion and performance; stable framing so the audience stays on the acting"
+
+- id: slow_push_tension
+  family: push
+  name_zh: 缓慢推近
+  name_en: slow push-in
+  motion_strength: low
+  selection: common
+  intents_en: [rising tension, emotional focus, growing importance]
+  intents_zh: [紧张上升, 情绪聚焦, 重要性增强]
+  prompt_zh: "缓慢推近[主体]，缓入缓出，从中景推到近景，全程跟焦主体，节奏克制，强化情绪"
+  prompt_en: "slow eased push-in toward [the subject], medium to close, focus locked on the subject, restrained pace to build emotion"
+
+- id: slow_pull_reveal
+  family: pull
+  name_zh: 缓慢拉远
+  name_en: slow pull-out
+  motion_strength: low
+  selection: common
+  intents_en: [context reveal, ending, loneliness]
+  intents_zh: [环境揭示, 结尾, 孤独]
+  prompt_zh: "缓慢拉远，缓入缓出，从近景拉到中景/全景，逐步揭示[主体]周围的环境与处境"
+  prompt_en: "slow eased pull-out from close to medium/wide, gradually revealing the environment and situation around [the subject]"
+
+- id: slow_dolly_space
+  family: dolly
+  name_zh: 缓慢横移
+  name_en: slow lateral dolly / truck
+  motion_strength: low
+  selection: common
+  intents_en: [reveal space, geography, layered depth]
+  intents_zh: [揭示空间, 地理关系, 层次纵深]
+  prompt_zh: "缓慢横移镜头（向[左/右]），匀速平稳，保持镜头朝向不变，前中后景依次划过，展示空间关系"
+  prompt_en: "slow lateral dolly/truck to the [left/right], smooth and even, lens facing constant, foreground/mid/background sliding past to reveal spatial layers"
+
+- id: track_with_subject
+  family: track
+  name_zh: 跟拍
+  name_en: tracking with the subject
+  motion_strength: medium
+  selection: common
+  intents_en: [walking, action, staying with the subject]
+  intents_zh: [行走, 动作, 与主体同行]
+  prompt_zh: "跟拍[主体]，速度与主体一致，保持景别稳定，云台平稳，让观众与主体同行"
+  prompt_en: "tracking shot moving with [the subject] at their exact pace, shot size held steady on a smooth gimbal so the audience travels with them"
+
+- id: slow_tilt_reveal
+  family: tilt
+  name_zh: 缓慢俯仰
+  name_en: slow tilt up / down
+  motion_strength: low
+  selection: common
+  intents_en: [reveal height, scale, significance]
+  intents_zh: [揭示高度, 体量, 重要性]
+  prompt_zh: "缓慢[上摇/下摇]，机位固定，缓入缓出走完全程，逐步揭示[主体/环境]的高度与体量"
+  prompt_en: "slow tilt [up/down] from a fixed position, eased across the full range, gradually revealing the height and scale of [the subject/environment]"
+
+- id: slow_pan_scan
+  family: pan
+  name_zh: 缓慢摇镜
+  name_en: slow pan / scan
+  motion_strength: low
+  selection: common
+  intents_en: [scan a scene, follow lateral movement]
+  intents_zh: [扫视场景, 跟随横向移动]
+  prompt_zh: "缓慢摇镜（向[左/右]），机位固定，柔和匀速，扫视场景/跟随[主体]的横向移动，不是甩镜"
+  prompt_en: "slow gentle pan to the [left/right] from a fixed position, even pace, scanning the scene / following [the subject's] lateral move — not a whip"
+
+- id: handheld_intimacy
+  family: handheld
+  name_zh: 轻微手持
+  name_en: subtle handheld drift
+  motion_strength: low
+  selection: common
+  intents_en: [realism, documentary immediacy, intimacy]
+  intents_zh: [真实感, 纪实即时感, 亲密]
+  prompt_zh: "轻微手持晃动，小幅自然呼吸感，跟随[主体]的细微动作，营造真实、贴近的现场感"
+  prompt_en: "subtle handheld drift, small natural breathing sway following [the subject's] micro-movements for a real, close, in-the-room feel"
+
+- id: ots_static
+  family: static
+  name_zh: 过肩固定
+  name_en: locked over-the-shoulder
+  motion_strength: static
+  selection: common
+  intents_en: [dialogue coverage, confrontation]
+  intents_zh: [对话覆盖, 对峙]
+  prompt_zh: "过肩固定机位，前景是[对话对象]的肩膀，焦点在[主体]脸上，机位不动，靠表演推进"
+  prompt_en: "locked over-the-shoulder framing, the [other party's] shoulder in the foreground, focus on [the subject's] face, camera still, driven by performance"
+
+# ── Reserved / dramatic tier (保留：仅在节拍配得上时) ─────────────────────────
+- id: orbit_hero_reveal
+  family: orbit
+  name_zh: 缓慢弧线环绕（英雄揭示）
+  name_en: slow arc orbit (hero reveal)
+  motion_strength: high
+  selection: reserved
+  intents_en: [hero reveal, villain entrance, character introduction, power beat]
+  intents_zh: [英雄揭示, 反派登场, 人物登场, 力量时刻]
+  prompt_zh: "围绕[主体]缓慢弧线环绕（半圈以内），单一运镜，缓入缓出，全程跟焦，凸显主体的核心地位"
+  prompt_en: "one slow arc orbit around [the subject] (a partial arc), a single eased move, focus locked throughout, marking the subject as central"
+
+- id: orbit_360_environment
+  family: orbit
+  name_zh: 缓慢360环境环绕
+  name_en: slow 360° environment orbit
+  motion_strength: high
+  selection: reserved
+  intents_en: [epic reveal, emotional peak, showcasing the surroundings]
+  intents_zh: [史诗揭示, 情绪顶点, 展示周遭环境]
+  prompt_zh: "围绕[主体]缓慢环绕一整圈360°，单一运镜，匀速缓入缓出，全程跟焦主体，展示其身处的整个环境"
+  prompt_en: "one slow full 360° orbit around [the subject] as a single eased move, focus locked throughout, revealing the entire environment they stand in"
+
+- id: crane_up_scale
+  family: crane
+  name_zh: 缓慢升镜（体量）
+  name_en: slow crane-up (scale)
+  motion_strength: medium
+  selection: reserved
+  intents_en: [grandeur, solitude, fate, scale]
+  intents_zh: [崇高, 孤独, 宿命, 体量]
+  prompt_zh: "缓慢匀速升镜头，单一运镜，从[主体]视线高度升到高空，全程跟焦主体，凸显其在环境中的渺小与体量"
+  prompt_en: "one slow steady crane-up, a single move, rising from [the subject's] eye level to a high wide, focus held on the subject to show their scale in the space"
+
+- id: aerial_establish
+  family: aerial
+  name_zh: 航拍漂移（建立）
+  name_en: slow aerial drift (establishing)
+  motion_strength: medium
+  selection: reserved
+  intents_en: [landscape, scale, establishing a place]
+  intents_zh: [风景, 体量, 建立场景]
+  prompt_zh: "缓慢航拍漂移，单一运镜，高度变化很小，平稳掠过[地点]，建立场景的规模与地理"
+  prompt_en: "one slow aerial drift, a single move with minimal altitude change, gliding smoothly over [the location] to establish its scale and geography"
+
+- id: whip_pan_transition
+  family: whip
+  name_zh: 甩镜转场
+  name_en: whip-pan transition
+  motion_strength: high
+  selection: reserved
+  intents_en: [hard transition, sudden turn, energy cut]
+  intents_zh: [硬转场, 突然转向, 动感切换]
+  prompt_zh: "快速甩镜作为转场，单一运动，运动模糊自然，用于两个节拍之间的硬切换"
+  prompt_en: "a fast whip-pan used purely as a transition, a single motion with natural motion blur, cutting hard between two beats"

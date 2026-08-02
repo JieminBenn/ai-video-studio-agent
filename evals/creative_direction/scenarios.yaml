@@ -1,0 +1,65 @@
+scenarios:
+  - id: en-intimate-dialogue
+    language: en
+    focus: intimate_dialogue
+    idea: "Two estranged sisters quietly reconcile while washing dishes after a funeral."
+    locked_constraints: ["restrained performance", "exact dialogue", "no background music"]
+    expected_domains: [performance, lens_angle, lighting]
+    required_facts: ["motivated soft source", "readable eyelines", "temporal facial beat"]
+    forbidden_contradictions: ["beauty-ad posing", "invented dialogue"]
+  - id: en-power-reversal
+    language: en
+    focus: power_reversal
+    idea: "A junior lawyer reveals the document that turns the boardroom against its chairman."
+    locked_constraints: ["grounded live action", "no orbit shot"]
+    expected_domains: [composition, camera_movement, editing]
+    required_facts: ["power changes spatially", "motivated start and end frame"]
+    forbidden_contradictions: ["random low angle", "orbit"]
+  - id: en-kinetic-action
+    language: en
+    focus: kinetic_action
+    idea: "A bicycle courier threads through a crowded market to stop a departing ferry."
+    locked_constraints: ["clear geography", "believable speed", "no impossible physics"]
+    expected_domains: [camera_movement, editing, composition]
+    required_facts: ["screen direction", "foreground motion", "feasible temporal beats"]
+    forbidden_contradictions: ["teleporting subject", "unmotivated 360 orbit"]
+  - id: en-stylized-3d
+    language: en
+    focus: stylized_3d
+    idea: "A tiny brass astronomer repairs a mechanical moon above a sleeping city."
+    locked_constraints: ["feature-film 3D", "brass and cloth materials", "no plastic skin"]
+    expected_domains: [prompting, lighting, composition]
+    required_facts: ["material separation", "depth-rich staging", "luminous motivated light"]
+    forbidden_contradictions: ["flat game-cutscene light", "photoreal human skin"]
+  - id: zh-suspense
+    language: zh
+    focus: suspense
+    idea: "深夜值班的护士发现走廊尽头的电梯每次都停在不存在的十三层。"
+    locked_constraints: ["克制悬疑", "不出现怪物", "无背景音乐"]
+    expected_domains: [lighting, composition, camera_movement]
+    required_facts: ["负空间", "可信光源", "延迟揭示"]
+    forbidden_contradictions: ["突然出现怪物", "炫技环绕"]
+  - id: zh-anime
+    language: zh
+    focus: anime
+    idea: "夏日祭最后一班电车上，少女终于认出多年未见的朋友。"
+    locked_constraints: ["二维剧场版动画", "克制表演", "月台暖光"]
+    expected_domains: [performance, lens_angle, prompting]
+    required_facts: ["眼神变化", "环境层次", "清晰赛璐璐光影"]
+    forbidden_contradictions: ["三维塑料质感", "夸张哭喊"]
+  - id: zh-two-character-identity
+    language: zh
+    focus: two_character_identity
+    idea: "一对外貌相似但气质相反的双胞胎在审讯室交换身份。"
+    locked_constraints: ["脸部相似", "发型与姿态可区分", "服装连续"]
+    expected_domains: [identity, performance, composition]
+    required_facts: ["共享面部锚点", "不同姿态签名", "服装不漂移"]
+    forbidden_contradictions: ["两张不同的脸", "随机换装"]
+  - id: zh-location-lighting-continuity
+    language: zh
+    focus: location_lighting_continuity
+    idea: "同一间老茶馆从黄昏谈判持续到停电后的烛光对峙。"
+    locked_constraints: ["空间布局不变", "光线状态发生合理变化", "道具位置连续"]
+    expected_domains: [lighting, composition, editing]
+    required_facts: ["门窗与桌位一致", "黄昏到烛光的光源逻辑", "剪辑衔接"]
+    forbidden_contradictions: ["窗户换位", "停电后仍有顶灯"]

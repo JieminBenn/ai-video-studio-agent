@@ -1,0 +1,73 @@
+skills:
+  - id: character_identity
+    skill: character_identity
+    domain: identity
+    stages: [bible, storyboard, image_prompt, video_prompt]
+    intents: [consistency, character_design, wardrobe_continuity]
+    title_en: Character identity anchors
+    title_zh: 角色身份锚点
+    summary_en: Define stable face, body, silhouette, hair, wardrobe, materials, palette, and do-not-drift rules.
+    summary_zh: 明确稳定的脸型、体型、轮廓、发型、服装、材质、配色以及禁止漂移规则。
+    avoid_en: [inconsistent faces, random wardrobe variants, identity drift]
+    avoid_zh: [脸部不一致, 随机换装, 角色身份漂移]
+  - id: location_identity
+    skill: location_identity
+    domain: identity
+    stages: [bible, storyboard, image_prompt, video_prompt]
+    intents: [location_continuity, spatial_logic, production_design]
+    title_en: Location identity anchors
+    title_zh: 场景身份锚点
+    summary_en: Lock spatial layout, architecture, materials, hero props, palette, light states, and screen direction.
+    summary_zh: 锁定空间布局、建筑材质、核心道具、配色、光线状态与轴线方向。
+    avoid_en: [impossible room geometry, moving doors and windows, unmotivated light shifts]
+    avoid_zh: [不可能的空间结构, 门窗位置漂移, 无动机光线变化]
+  - id: micro_expression
+    skill: micro_expression
+    domain: performance
+    stages: [bible, storyboard, video_prompt]
+    intents: [emotion, acting, dialogue]
+    title_en: Temporal micro-expression performance
+    title_zh: 时间化微表情表演
+    summary_en: Build emotion through start state, trigger, eyes, brow, mouth, breath, body echo, and resolution.
+    summary_zh: 通过初始状态、触发点、眼神、眉部、嘴部、呼吸、身体回应与收束构建情绪。
+    avoid_en: [frozen expressions, uncaused tears, face-only emotion]
+    avoid_zh: [表情冻结, 无缘由落泪, 只有脸部没有身体回应]
+  - id: image_prompting
+    skill: image_prompting
+    domain: prompting
+    stages: [image_prompt]
+    intents: [image_quality, material_specificity, visual_clarity]
+    title_en: Dense image prompting
+    title_zh: 高密度图像提示词
+    summary_en: Front-load subject and moment, then specify materials, lens, motivated light, palette, depth, and focal point.
+    summary_zh: 先写主体与决定性瞬间，再明确材质、镜头、动机光、配色、景深层次与视觉焦点。
+    avoid_en: [meta instructions, vague adjectives, pasted skill text]
+    avoid_zh: [元指令, 空泛形容词, 粘贴整段技能文本]
+  - id: video_prompting
+    skill: video_prompting
+    domain: prompting
+    stages: [video_prompt]
+    intents: [motion, continuity, temporal_direction]
+    title_en: Motion-first video prompting
+    title_zh: 动作优先的视频提示词
+    summary_en: Lead with physical action and temporal change; preserve camera, continuity, dialogue, sound, and capability constraints.
+    summary_zh: 先描述物理动作与时间变化，并保留运镜、连续性、对白、声音及能力限制。
+    avoid_en: [static descriptions, invented dialogue, unsupported references]
+    avoid_zh: [静态描述, 擅自添加对白, 不支持的参考图要求]
+  - id: storyboard_grid_prompting
+    skill: storyboard_grid_prompting
+    domain: prompting
+    stages: [image_prompt, video_prompt]
+    intents: [storyboard_grid, motion_sequence, consistency]
+    title_en: Storyboard-grid prompting
+    title_zh: 分镜宫格提示词
+    summary_en: Specify an exact uniform grid whose panels preserve identity, location, lighting, and continuous motion order.
+    summary_zh: 明确统一宫格布局，在各格中保持角色、场景、光线与连续动作顺序一致。
+    avoid_en: [collage layouts, captions, panel identity drift]
+    avoid_zh: [拼贴布局, 字幕文字, 分格间角色漂移]
+
+camera_recipes:
+  path: studio_agent/cinematography_recipes.yaml
+  domain: camera_movement
+  stages: [storyboard, video_prompt]
+  requires_capabilities: [camera_motion]

@@ -1,0 +1,57 @@
+bilingual_entries:
+  - id: lighting.motivated.single_source
+    domain: lighting
+    stages: [bible, storyboard, image_prompt, video_prompt]
+    intents: [naturalism, intimacy, suspense]
+    title_en: Motivated single-source lighting
+    title_zh: 单一动机光源
+    principle_en: Let one believable source establish direction, contrast, and eye light.
+    principle_zh: 用一个可信光源统一光线方向、反差与眼神光。
+    use_when_en: The scene needs grounded intimacy, readable form, or controlled suspense.
+    use_when_zh: 场景需要写实亲密感、清晰形体或克制悬疑时使用。
+    recipe_en: Name the source, direction, softness, contrast, color, and background falloff.
+    recipe_zh: 明确光源、方向、软硬、反差、色温与背景衰减。
+    avoid_en: [flat omnidirectional light, unmotivated rim light]
+    avoid_zh: [无方向平光, 没有动机的轮廓光]
+  - id: lens.perspective.intimate_close
+    domain: lens_angle
+    stages: [storyboard, image_prompt, video_prompt]
+    intents: [intimacy, vulnerability]
+    title_en: Intimate natural perspective
+    title_zh: 亲密自然透视
+    principle_en: Use distance and perspective to create intimacy without beauty-ad distortion.
+    principle_zh: 通过拍摄距离与透视建立亲密感，避免广告式脸部变形。
+    use_when_en: A face carries a quiet emotional turn while the setting must remain legible.
+    use_when_zh: 面部承担安静的情绪转折，同时仍需保留环境信息时使用。
+    recipe_en: Choose a natural portrait perspective, keep contextual depth, and place the eyeline deliberately.
+    recipe_zh: 采用自然人像透视，保留环境层次，并精确安排视线高度。
+    avoid_en: [empty bokeh, extreme wide-angle facial distortion]
+    avoid_zh: [空洞散景, 超广角脸部畸变]
+  - id: composition.power.blocking
+    domain: composition
+    stages: [storyboard, image_prompt, video_prompt]
+    intents: [dominance, reversal, confrontation]
+    title_en: Power through blocking
+    title_zh: 用调度表达权力
+    principle_en: Express power through spatial ownership before adding camera motion.
+    principle_zh: 先用空间占有关系表达权力，再决定是否运镜。
+    use_when_en: A confrontation or reversal changes who controls the scene.
+    use_when_zh: 对峙或反转改变场面控制权时使用。
+    recipe_en: Control height, foreground occupation, negative space, and eyelines; move only when power changes.
+    recipe_zh: 控制高度、前景占比、负空间与视线；只在权力变化时移动镜头。
+    avoid_en: [random low angle, orbit without a power beat]
+    avoid_zh: [随意低角度, 没有权力节点的环绕]
+  - id: editing.coverage.cut_motivation
+    domain: editing
+    stages: [storyboard]
+    intents: [continuity, pacing]
+    title_en: Coverage with cut motivation
+    title_zh: 带剪切动机的覆盖镜头
+    principle_en: Design each shot around the visual or emotional reason for the next cut.
+    principle_zh: 每个镜头都应包含通往下一剪切点的视觉或情绪理由。
+    use_when_en: Planning multi-shot coverage that must remain clear and editable.
+    use_when_zh: 规划需要清晰且可剪辑的多镜头覆盖时使用。
+    recipe_en: Record the entry state, decisive beat, exit state, screen direction, and next-shot handoff.
+    recipe_zh: 记录进入状态、决定性节点、退出状态、轴线方向与下一镜头衔接。
+    avoid_en: [coverage with no cut point, screen-direction reversal]
+    avoid_zh: [没有剪切点的覆盖镜头, 无意图的轴线反转]

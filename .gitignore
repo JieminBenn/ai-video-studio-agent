@@ -1,0 +1,36 @@
+# Secrets — never commit
+.env
+
+# Generated project artifacts (files are the source of truth, but not checked in)
+projects/
+.superpowers/
+.worktrees/
+knowledge/imports/
+knowledge/index.json
+
+# Local agent/project notes kept off the public repository
+AGENTS.md
+CLAUDE.md
+summary.txt
+PLAN.md
+docs/superpowers/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+build/
+dist/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Claude Code personal settings
+.claude/settings.local.json
